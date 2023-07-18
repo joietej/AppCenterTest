@@ -1,6 +1,7 @@
 package my.appcentertest
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +19,21 @@ import my.appcentertest.ui.theme.AppCenterTestTheme
 
 
 class MainActivity : ComponentActivity() {
+    val appCenterKeyName = "APP_CENTER_KEY"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCenter.start(
-            application,
-            System.getProperty("APP_CENTER_KEY"),
-            Analytics::class.java, Crashes::class.java
-        )
+
+        val appCenterKey = System.getProperty(appCenterKeyName) ?: System.getenv(appCenterKeyName)
+
+        appCenterKey?.let {
+            AppCenter.start(
+                application,
+                it,
+                Analytics::class.java, Crashes::class.java
+            )
+            Log.i("App Center", "started")
+        }
+
         setContent {
             AppCenterTestTheme {
                 // A surface container using the 'background' color from the theme
